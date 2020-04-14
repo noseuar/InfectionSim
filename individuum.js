@@ -24,9 +24,7 @@ class MyPoint {
     }
 
     getIntesity() {
-        /*  T_INFECTION: 100% 
-            this.infectionTimer: current percentage 
-            maximum return: 255
+        /*  
         */
         return Math.floor((this.infectionTimer / (T_INFECTION / 100.0)) * 2.55)
     }
