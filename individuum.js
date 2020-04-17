@@ -4,8 +4,8 @@ class MyPoint {
         this.infected = false;
         this.infectionTimer = T_INFECTION;
         this.immune = false;
-        this.dx = random(P_SPEED/10, P_SPEED);
-        this.dy = random(P_SPEED/10, P_SPEED);
+        this.dx = random(speed/10, speed); // 0.01 ... 0.1
+        this.dy = random(speed/10, speed); 
 
         if (random() * 10 > 5){
             this.dx *= -1;
@@ -14,6 +14,15 @@ class MyPoint {
         if (random() * 10 > 5){
             this.dy *= -1;
         }
+    }
+
+    setSpeed(spd) {
+        this.dx *= spd;
+        this.dy *= spd;
+    }
+
+    getSpeed() {
+        return [this.dx, this.dy];
     }
 
     setInfected() {
@@ -37,14 +46,14 @@ class MyPoint {
         nextY = this.vec.y + 1 * deltaTime * this.dy;
 
         /* wenn links oder rechts raus, x-Richtung umkehren. */
-        if ((nextX < R_POINT) || (nextX > width - R_POINT - B_COLUMN)) {
+        if ((nextX < radius_point) || (nextX > width - radius_point - B_COLUMN)) {
             this.dx *= -1;
         }
 
         this.vec.x = this.vec.x + 1 * deltaTime * this.dx; // jetzt nochmal nächste x-Pos
         
         /* wenn oben oder unten raus, y-Richtung umkehren. */
-        if ((nextY < R_POINT) || (nextY > height - R_POINT)){
+        if ((nextY < radius_point) || (nextY > height - radius_point)){
             this.dy *= -1;
         }
 

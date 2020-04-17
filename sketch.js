@@ -2,34 +2,50 @@ const points = [];
 var item;
 var curr_time;
 var infections = 1;
-const R_POINT = 4;
+var radius_point = 4;
 const N_POINTS = 80;
 const B_COLUMN = 20;
-const P_SPEED = 0.1;
+const speed = 0.2;
 const T_INFECTION = 500;
 
+var cnv;
+var speedFact;
+let button = null;
+let buttonP = null;
+let buttonM = null;
+let buttonB = null;
+let buttonS = null;
+
+let slider = null;
+
 function setup() {
-    createCanvas(800, 600);
+
+    curr_time = 0;
+    while (points.length > 0) {
+      points.pop();
+    }
+    cnv = createCanvas(900, 600);
+    centerCanvas();
     for (var i=0; i<N_POINTS; i++) {
       points.push(new MyPoint(
         createVector(
-          random(R_POINT, width - 2 * R_POINT - B_COLUMN), random(R_POINT,height - R_POINT)
+          random(radius_point, width - 2 * radius_point - B_COLUMN), random(radius_point,height - radius_point)
         )
       ))
     }
-    console.log(round(random(0,N_POINTS-1)));
     points[round(random(0,N_POINTS-1))].setInfected();
     frameRate(30);
-    
-  }
-  
-  function draw() {
+    setupUi();
+}
+
+
+function draw() {
     background(0);
     strokeWeight(0);
     fill(255, 171, 0);
     rect(width - B_COLUMN, height-round(infections * (height / N_POINTS)), B_COLUMN, round(infections * (height / N_POINTS)));
     fill(40,40,40);
-    rect(0, height-round(infections * (height / N_POINTS)), width - B_COLUMN, round(infections * (height / N_POINTS)));
+    //rect(0, height-round(infections * (height / N_POINTS)), width - B_COLUMN, round(infections * (height / N_POINTS)));
     
     fill(255);
     strokeWeight(0);
@@ -40,9 +56,9 @@ function setup() {
     } else {
       fill(255, 0, 0);
     }
-    text(curr_time + " sec.", 10, 580);
+    text(curr_time.toFixed(2) + " sec.", 10, 580);
     fill(255);
-    strokeWeight(R_POINT*2);
+    strokeWeight(radius_point*2);
     infections = 0;
     for (let p of points) {
 
@@ -51,11 +67,10 @@ function setup() {
 
         infections++;
         for (let p2 of points) {
-          if (distance(p, p2) <= 2*R_POINT) {
+          if (distance(p, p2) <= 2*radius_point) {
             p2.setInfected();
           }
         }
-        console.log(p.getIntesity()); // .setAlpha(min(255, p.getIntesity()))
         pColor.setAlpha(p.getIntesity());
         stroke(pColor);
         
@@ -63,13 +78,90 @@ function setup() {
         stroke(255);
       }
       point(p.vec.x, p.vec.y);
+      
       p.run();
     }
+}
 
-    
+function setupUi() {
+
+  let dist = 10;
+  let distH = dist/2;
+  let bWidth = 80;
+  let bHeight = 30;
+
+  if(button != null) {
+    button.remove();
   }
+  button = createButton('restart');
+  button.class('button');bWidth
+  button.position(dist, (distH+bHeight)*3 + distH);
+  button.mousePressed(setup);
 
-  function distance(p1, p2) {
+  if(buttonP != null) {
+    buttonP.remove();
+  }
+  buttonP = createButton('Speed +');
+  buttonP.position(dist + bWidth + dist, distH + bHeight + distH);
+  buttonP.mousePressed(faster);
+  buttonP.class('button');
+
+  if(buttonM != null) {
+    buttonM.remove();
+  }
+  buttonM = createButton('Speed -');
+  buttonM.position(dist, distH + bHeight + distH);
+  buttonM.mousePressed(slower);
+  buttonM.class('button');
+
+  if(buttonB != null) {
+    buttonB.remove();
+  }
+  buttonB = createButton('Size +');
+  buttonB.position(dist + bWidth + dist, distH);
+  buttonB.mousePressed(bigger);
+  buttonB.class('button');
+
+  if(buttonS != null) {
+    buttonS.remove();
+  }
+  buttonS = createButton('Size -');
+  buttonS.position(dist, distH);
+  buttonS.mousePressed(smaller);
+  buttonS.class('button');
+}
+
+function centerCanvas() {
+  var x = (windowWidth - width) / 2;
+  var y = (windowHeight - height) / 2;
+  cnv.position(x, y);
+}
+
+function faster() {
+  for (let p of points) {
+    p.setSpeed(1.1);
+  }
+}
+
+function slower() {
+  for (let p of points) {
+    p.setSpeed(0.9);
+  }
+}
+
+function bigger() {
+  if (radius_point < 20) {
+    radius_point *= 1.1;
+  }
+}
+
+function smaller() {
+  if (radius_point >= 0.5) {
+    radius_point *=  0.9;
+  }
+}
+
+function distance(p1, p2) {
     var dx;
     var dy;
     
@@ -77,4 +169,4 @@ function setup() {
     dy = p2.vec.y - p1.vec.y;
     
     return Math.sqrt(dy * dy + dx * dx);
-  }
+}
