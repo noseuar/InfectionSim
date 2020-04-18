@@ -94,9 +94,13 @@ function setupUi() {
     button.remove();
   }
   button = createButton('restart');
-  button.class('button');bWidth
+  button.class('button');
   button.position(dist, (distH+bHeight)*3 + distH);
   button.mousePressed(setup);
+
+  input = createInput('Init Nb.');
+  input.position(dist*2 + bWidth, (distH+bHeight)*2 + distH);
+  input.class('input');
 
   if(buttonP != null) {
     buttonP.remove();

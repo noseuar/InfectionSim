@@ -24,3 +24,8 @@ html, body {
     background-color: #d35f00;
     color: white;
   }
+
+  .input {
+    width: 80px;
+    border-radius: 0px;
+  }
